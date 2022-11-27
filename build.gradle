@@ -1,0 +1,54 @@
+plugins {
+  id 'java'
+  id 'application'
+  id 'idea'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation (
+    'org.eclipse.jetty.aggregate:jetty-all:9.4.24.v20191120',
+    'org.freemarker:freemarker:2.3.29',
+    'org.xerial:sqlite-jdbc:3.34.0'
+  )
+}
+
+application {
+  mainClass = 'comp3911.cwk2.AppServer'
+}
+
+idea {
+  module {
+    outputDir file('build/classes/main')
+    testOutputDir file('build/classes/test')
+  }
+}
+
+task submission(type: Zip) {
+  group = 'Submission'
+  description = 'Generates Zip archive suitable for submission to Minerva.'
+
+  archiveFileName = 'cwk2.zip'
+  destinationDirectory = project.rootDir
+
+  from("$project.rootDir") {
+    exclude 'cwk2.zip', 'patients.zip', 'build', '.git', '.gradle', '.idea'
+  }
+
+  doFirst {
+    //assert file("report.pdf").exists()
+    if (! file("report.pdf").exists()) {
+      println "Cannot find a file named report.pdf"
+      println "Check that you have named your report PDF correctly"
+      println "Check that the file is in the same directory as build.gradle"
+      throw new GradleException()
+    }
+  }
+
+  doLast {
+    println "cwk2.zip generated."
+  }
+}
