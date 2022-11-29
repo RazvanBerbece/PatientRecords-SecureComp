@@ -5,6 +5,10 @@ The first identified vulnerability of the service is SQL Injection.
 The form fields on the `login.html` page have no validation on the client-side and are sent as is to the server.
 The server does not do ANY input validation either, which means that the form field values are used in the SQL statements as is.
 
-<Put code snippets here from>
+This means that there are a few very serious threats that the service app is vulnerable to:
+1. Tampering with data (dropping tables, inserting or editing entries)
+2. Information disclosure (reading confidential patient data without needing the required access credentials)
 
-<Further explanations, investigations>
+[Put relevant vulnerability code snippets here from `AppServlet.java`]
+
+[Further explanations, investigations]
