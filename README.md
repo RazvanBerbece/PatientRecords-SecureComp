@@ -24,6 +24,7 @@ treated_for varchar(50) );
 ## Example table record
 Table `user` (`select * from user`)
 ```
+id|name|username|password
 1| Nick Efford  |nde    |wysiwyg0
 2| Mary Jones   |mjones |marymary
 3| Andrew Smith |aps    |abcd1234
@@ -31,6 +32,7 @@ Table `user` (`select * from user`)
 
 Table `patient` (`select * from patient`)
 ```
+surname|forename|address|born|dp_id|treated_for
 1|Davison|Peter|27 Rowan Avenue, Hightown, NT2 1AQ|1942-04-12|4|Lung cancer
 2|Baird|Joan|52 The Willows, Lowtown, LT5 7RA|1927-05-08|17|Osteoarthritis
 3|Stevens|Susan|36 Queen Street, Histon, HT3 5EM|1989-04-01|2|Asthma
