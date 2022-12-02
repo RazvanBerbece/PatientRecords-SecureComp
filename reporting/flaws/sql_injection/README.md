@@ -32,6 +32,8 @@ The final populated query is then built using string interpolation `String query
 The query is then executed as-is, which means that for string `"' or '1'='1"`, the final password parameter will be `''`, and that `or '1'='1'` will always evaluate as true, which leads to the `if (authenticated(username, password))` condition to return `True`, and thus the records are then queriable to an unauthorized user. 
 
 # Evidence
-### Sequence of screenshots depicting a valid username but with a malicious password successful login and query attempt
-![alt text](./ss1.png)
-![alt text](./ss2.png)
+### Sequence of screenshots depicting a valid username & malicious password pair successfully querying the database
+POST form population
+![POST form population](./ss1.png)
+Correct query result + POSTed data payload (on the right hand side of the screenshot, under `Form Data`)
+![Correct query result + POSTed data payload (on the right hand side of the screenshot, under `Form Data`)](./ss2.png)
