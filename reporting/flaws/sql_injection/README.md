@@ -6,9 +6,8 @@ The form fields on the `login.html` page have no validation on the client-side a
 The server does not do ANY input validation either, which means that the form field values are used in the SQL statements as is.
 
 This means that there are a few very serious threats that the service app is vulnerable to:
-1. Tampering with data (dropping tables, inserting or editing entries)
-2. Information disclosure (reading confidential patient data without needing the required access credentials)
-3. Elevation of Privilege (being able to search for patient details without being a registered user of the system)
+1. Information disclosure (reading confidential patient data without needing the required access credentials)
+2. Elevation of Privilege (being able to search for patient details without being a registered user of the system)
 
 # To Reproduce
 ## With a valid username
@@ -37,3 +36,9 @@ POST form population
 ![POST form population](./ss1.png)
 Correct query result + POSTed data payload (on the right hand side of the screenshot, under `Form Data`)
 ![Correct query result + POSTed data payload (on the right hand side of the screenshot, under `Form Data`)](./ss2.png)
+
+### Sequence of screenshots depicting a malicious username & password pair successfully querying the database
+POST form population
+![POST form population](./ss3.png)
+Correct query result + POSTed data payload (on the right hand side of the screenshot, under `Form Data`)
+![Correct query result + POSTed data payload (on the right hand side of the screenshot, under `Form Data`)](./ss4.png)
