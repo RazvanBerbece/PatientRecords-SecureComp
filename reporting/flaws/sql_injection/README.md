@@ -7,7 +7,7 @@ The server does not do ANY input validation either, which means that the form fi
 
 This means that there are a few very serious threats that the service app is vulnerable to:
 1. Information disclosure (reading confidential patient data without needing the required access credentials)
-2. Elevation of Privilege (being able to search for patient details without being a registered user of the system)
+2. Elevation of Privilege (being use the system without being a registered user)
 
 # To Reproduce
 ## With a valid username
