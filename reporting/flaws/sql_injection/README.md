@@ -26,5 +26,12 @@ The application will display `No records found.` in both cases, which means that
 
 # Code Analysis
 The authorization SQL query looks like this: `private static final String AUTH_QUERY = "select * from user where username='%s' and password='%s'";`. 
+
 The final populated query is then built using string interpolation `String query = String.format(AUTH_QUERY, username, password);`. 
+
 The query is then executed as-is, which means that for string `"' or '1'='1"`, the final password parameter will be `''`, and that `or '1'='1'` will always evaluate as true, which leads to the `if (authenticated(username, password))` condition to return `True`, and thus the records are then queriable to an unauthorized user. 
+
+# Evidence
+### Sequence of screenshots depicting a valid username but with a malicious password successful login and query attempt
+![alt text](./ss1.png)
+![alt text](./ss2.png)
