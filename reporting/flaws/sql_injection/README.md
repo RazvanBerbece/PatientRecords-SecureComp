@@ -14,7 +14,9 @@ This means that there are a few very serious threats that the service app is vul
 1. Input an existing username from the DB in the username field 
 1. Input the `' or '1'='1` string into the password field
 2. Submit
+
 The application will display `No records found.`, which means that the server ran the query with an empty surname string for an unauthorized user (no password provided)
+
 **Note**: The username field is vulnerable to SQL injection too, which means that the login portal can be attacked without knowing an existing username either.
 
 [Put relevant vulnerability code snippets here from `AppServlet.java`]
