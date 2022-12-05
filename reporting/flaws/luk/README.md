@@ -9,10 +9,10 @@
     - Brute force attacks currently possible cause:
     - Not storing securily/hashing.
     - No tracking of failed attemps/account lockout.
-5. Requests (`GET`/`POST`):
+5. HTTP Headers Requests (`GET`/`POST`):
     - `GET`:
         * `cache-control`: must revalidate
-        * `cahce-control`: public
+        * `cache-control`: public
         * `Access-control-allow-origin`: should be `<origin>`
         * `vary`(?)
     - `POST`:
