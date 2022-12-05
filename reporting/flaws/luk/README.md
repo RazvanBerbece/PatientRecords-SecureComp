@@ -18,3 +18,4 @@
     - `POST`:
         * `crossorigin="anonymous"`: same issue as c above.
 6. Users can have the same username.
+7. Surname can also be sql-injected.
