@@ -14,8 +14,10 @@
         * `cache-control`: must revalidate
         * `cache-control`: public
         * `Access-control-allow-origin`: should be `<origin>`
+        https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
         * `vary`(?)
     - `POST`:
         * `crossorigin="anonymous"`: same issue as c above.
+        https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 6. Users can have the same username.
 7. Surname can also be sql-injected.
