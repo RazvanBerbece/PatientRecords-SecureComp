@@ -17,4 +17,4 @@
         * `vary`(?)
     - `POST`:
         * `crossorigin="anonymous"`: same issue as c above.
-
+6. Users can have the same username.
