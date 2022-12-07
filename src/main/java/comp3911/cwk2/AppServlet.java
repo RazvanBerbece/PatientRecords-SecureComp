@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +26,11 @@ import freemarker.template.TemplateExceptionHandler;
 public class AppServlet extends HttpServlet {
 
   private static final String CONNECTION_URL = "jdbc:sqlite:db.sqlite3";
-  private static final String AUTH_QUERY = "select * from user where username='%s' and password='%s'";
-  private static final String SEARCH_QUERY = "select * from patient where surname='%s' collate nocase";
+
+  // Use ? as the placeholder character in the SQL query strings 
+  // in order to use PreparedStatement objects
+  private static final String AUTH_QUERY = "select * from user where username=? and password=?";
+  private static final String SEARCH_QUERY = "select * from patient where surname=? collate nocase";
 
   private final Configuration fm = new Configuration(Configuration.VERSION_2_3_28);
   private Connection database;
@@ -103,18 +106,37 @@ public class AppServlet extends HttpServlet {
   }
 
   private boolean authenticated(String username, String password) throws SQLException {
-    String query = String.format(AUTH_QUERY, username, password);
-    try (Statement stmt = database.createStatement()) {
-      ResultSet results = stmt.executeQuery(query);
+
+    // Use PreparedStatement to precompile the auth SQL query and prevent SQL injection attacks
+    try (PreparedStatement stmt = database.prepareStatement(AUTH_QUERY)) {
+
+      // Set the parameters of the precompiled auth SQL query using the index and the user input
+      // index = 1 -> username in AUTH_QUERY
+      // index = 2 -> password in AUTH_QUERY
+      stmt.setString(1, username);
+      stmt.setString(2, password);
+
+      // Execute the prepared & formatted statement & get result set
+      ResultSet results = stmt.executeQuery();
+
       return results.next();
     }
   }
 
   private List<Record> searchResults(String surname) throws SQLException {
+
     List<Record> records = new ArrayList<>();
-    String query = String.format(SEARCH_QUERY, surname);
-    try (Statement stmt = database.createStatement()) {
-      ResultSet results = stmt.executeQuery(query);
+
+    // Use PreparedStatement to precompile the auth SQL query and prevent SQL injection attacks
+    try (PreparedStatement stmt = database.prepareStatement(SEARCH_QUERY)) {
+
+      // Set the parameters of the precompiled auth SQL query using the index and the user input
+      // index = 1 -> surname in SEARCH_QUERY
+      stmt.setString(1, surname);
+
+      // Execute the prepared & formatted statement & get result set
+      ResultSet results = stmt.executeQuery();
+
       while (results.next()) {
         Record rec = new Record();
         rec.setSurname(results.getString(2));
