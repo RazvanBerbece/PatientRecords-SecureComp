@@ -25,19 +25,19 @@ public class AppServer {
     Server server = new Server();
     server.setHandler(handler);
 
-    // Server HTTPS config
+    // Server HTTPS config - set the secure scheme, the port for the secure connection and other config
     HttpConfiguration httpsConfiguration = new HttpConfiguration();
     httpsConfiguration.setSecureScheme("https");
     httpsConfiguration.setSecurePort(port);
     httpsConfiguration.addCustomizer(new SecureRequestCustomizer());
 
-    // Load keystore from local filepath
+    // Load keystore from local folder (in root where "./gradlw run" is executed)
     String keystoreFilepath = "./keystore.jks";
     SslContextFactory.Server ssl = new SslContextFactory.Server();
-    ssl.setKeyStorePath(keystoreFilepath);
-    ssl.setKeyStorePassword("gogo98"); // force manual entry of keystore password in order to avoid hardcoding and dealing with env vars
+    ssl.setKeyStorePath(keystoreFilepath); // path to keystore
+    ssl.setKeyStorePassword("gogo98"); // keystore access password - hardcoded :(
     
-    // Create HTTPS connector
+    // Create HTTPS connector - link https configuration to connector
     ServerConnector httpsConnector = new ServerConnector(
         server,
         new SslConnectionFactory(ssl, "http/1.1"),

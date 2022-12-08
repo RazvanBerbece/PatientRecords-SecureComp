@@ -10,8 +10,15 @@ This means that the service is vulnerable to:
 The first evidence below depicts what an attacker running the ‘tcpdump’ command on a compromised machine which runs the application could see in the case of an outgoing request. 
 Note that the POST form data sent (username, password, surname) is visible and not encrypted.
 
+# Fix
+1. Generate a keystore and a self-signed certificate using the command `keytool -genkey -alias appName -keyalg RSA -keystore keystore.jks -keysize 2048`
+2. Integrate keystore file into Jetty Java Server application
+
 # Evidence
 **Prior to implementing HTTPS**
 ![Eavesdropped POSTed data payload (in terminal window, note that it is NOT encrypted and readable)](./ss1.png)
 **Post implementing HTTPS**
 ![Eavesdropped POSTed data payload (in terminal window, note that it is encrypted)](./ss2.png)
+
+# Resources
+1. https://dzone.com/articles/adding-ssl-support-embedded
