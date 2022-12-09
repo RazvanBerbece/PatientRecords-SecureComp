@@ -15,11 +15,12 @@ This means that there are a few very serious threats that the service app is vul
 2. Input the `' or '1'='1` string into the password field
 3. Submit POST form
 
-**Note**: The username field is vulnerable to SQL injection too, which means that the login portal can be attacked without knowing an existing username either.
-## With no username
+**Note**: The username and surname fields are vulnerable to SQL injection too, which means that the login portal can be attacked without knowing an existing username either.
+## With no username or password or surname
 1. Input the `' or '1'='1` string into the username field
-1. Input the `' or '1'='1` string into the password field
-2. Submit POST form
+2. Input the `' or '1'='1` string into the password field
+3. Input the `' or '1'='1` string into the surname field
+4. Submit POST form
 
 The application will display `No records found.` in both cases, which means that the server ran the query with an empty surname string for an unauthorized user (no password or username provided)
 
