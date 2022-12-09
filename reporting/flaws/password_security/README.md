@@ -8,7 +8,7 @@ One of the identified vulnerabilities of the service is that password are genera
 These issues mean that a user profile could easily be compromised. Either by an attacker gaining access to the database in
 some way and usign the plain text stored passwords or a brute force attack using common sequences and combinations of 
 characters and numbers. Lastly, in this implementation, users are allowed to enter weak credentials, a username which
-is non-unique and a password that has no requirement of using a certaing combination of numbers, uppercase and 
+is non-unique and a password that has no requirement of using a certain combination of numbers, uppercase and 
 lowercase letters or special characters. These flaws were discovered by inspecting the SQL Database using a 
 GUI tool, SQLiteStudio, and inspecting the database schema and data stored.
 
@@ -39,7 +39,7 @@ to a string before being returned.
 
 The application uses the function to compare the text received as password in the login form.
 `stmt.setString(2, getHash(password))`
-The same fucntion could be used in a registration process, hashing the new password before storing.
+The same function could be used in a registration process, hashing the new password before storing.
 
 # Evidence
 ### Screenshot of final database data and schema that shows the passwords stored in hashed text.
