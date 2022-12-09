@@ -34,6 +34,12 @@ public class AppServlet extends HttpServlet {
   // in order to use PreparedStatement objects
   private static final String AUTH_QUERY = "select * from user where username=? and password=?";
   private static final String SEARCH_QUERY = "select * from patient where surname=? collate nocase";
+  // Query used to check how many login attempts a user has
+  private static final String ATTEMPT_QUERY = "select * from user where username=?";
+  // Query used to increment user login attempts
+  private static final String INCREMENT_QUERY = "UPDATE user SET attempts = attempts + 1 WHERE username = ?";
+
+  
 
   private final Configuration fm = new Configuration(Configuration.VERSION_2_3_28);
   private Connection database;
@@ -109,12 +115,17 @@ public class AppServlet extends HttpServlet {
     String surname = request.getParameter("surname");
 
     try {
-      if (authenticated(username, password)) {
+      if (authenticated(username, password) && attempts(username)) {
         // Get search results and merge with template
         Map<String, Object> model = new HashMap<>();
         model.put("records", searchResults(surname));
         Template template = fm.getTemplate("details.html");
         template.process(model, response.getWriter());
+      } 
+      // Returns locked html if user has more attempts than allowed
+      else if(!attempts(username)) {
+        Template template = fm.getTemplate("locked.html");
+        template.process(null, response.getWriter());
       } else {
         Template template = fm.getTemplate("invalid.html");
         template.process(null, response.getWriter());
@@ -144,6 +155,29 @@ public class AppServlet extends HttpServlet {
       ResultSet results = stmt.executeQuery();
 
       return results.next();
+    }
+  }
+
+  // Checks if user has attempted too many times to log in
+  private boolean attempts(String username) throws SQLException {
+
+    // Increments attempts whenever method is called
+    try (PreparedStatement stmt = database.prepareStatement(INCREMENT_QUERY)) {
+      stmt.setString(1, username);
+      stmt.executeQuery();
+    }
+
+    try (PreparedStatement stmt = database.prepareStatement(ATTEMPT_QUERY)) {
+
+      stmt.setString(1, username);
+      ResultSet results = stmt.executeQuery();
+      int attempts = results.getInt(4);
+      // Returns true if user has less than the max attempts, otherwise returns false
+      if (attempts < 3) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
