@@ -1,6 +1,11 @@
 # PatientRecords-SecureComp
 Repository for CW2 of the COMP3911 - Secure Computing module in University of Leeds
 
+# To Run
+1. Make sure you have the `keystore.jks` file present in the root of the repo (this is so HTTPS can be used to access the web app)
+2. Run `./gradlew run`
+3. Navigate to `https://localhost:8080/`
+
 # Database
 The database is an SQL database which is stored locally as a `.sqlite3` file. 
 The database is then loaded at server run-time and used for queries.
