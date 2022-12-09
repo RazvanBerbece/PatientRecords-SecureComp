@@ -22,12 +22,16 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
 @SuppressWarnings("serial")
 public class AppServlet extends HttpServlet {
 
   private static final String CONNECTION_URL = "jdbc:sqlite:db.sqlite3";
 
-  // Use ? as the placeholder character in the SQL query strings 
+  // Use ? as the placeholder character in the SQL query strings
   // in order to use PreparedStatement objects
   private static final String AUTH_QUERY = "select * from user where username=? and password=?";
   private static final String SEARCH_QUERY = "select * from patient where surname=? collate nocase";
@@ -35,10 +39,33 @@ public class AppServlet extends HttpServlet {
   private final Configuration fm = new Configuration(Configuration.VERSION_2_3_28);
   private Connection database;
 
+  private static byte[] salt = {-74, -23, -102, -124, -5, 73, 105, -91, -22, 
+    -77, -118, -8, 94, -70, 17, -90};
+
   @Override
   public void init() throws ServletException {
     configureTemplateEngine();
     connectToDatabase();
+  }
+
+  // Returns a password that is hashed using salt
+  // Uses a statically declared salt as we needed to convert existing database passwords
+  // Proper implementation would use a randomly generated salt and would require a fresh database
+  private String getHash(String pw) {
+    String hashed = null;
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
+      md.update(salt);
+      byte[] bytes = md.digest(pw.getBytes());
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < bytes.length; i++) {
+        sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+      }
+      hashed = sb.toString();
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
+    return hashed;
   }
 
   private void configureTemplateEngine() throws ServletException {
@@ -48,8 +75,7 @@ public class AppServlet extends HttpServlet {
       fm.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
       fm.setLogTemplateExceptions(false);
       fm.setWrapUncheckedExceptions(true);
-    }
-    catch (IOException error) {
+    } catch (IOException error) {
       throw new ServletException(error.getMessage());
     }
   }
@@ -57,30 +83,28 @@ public class AppServlet extends HttpServlet {
   private void connectToDatabase() throws ServletException {
     try {
       database = DriverManager.getConnection(CONNECTION_URL);
-    }
-    catch (SQLException error) {
+    } catch (SQLException error) {
       throw new ServletException(error.getMessage());
     }
   }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-   throws ServletException, IOException {
+      throws ServletException, IOException {
     try {
       Template template = fm.getTemplate("login.html");
       template.process(null, response.getWriter());
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
-    }
-    catch (TemplateException error) {
+    } catch (TemplateException error) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-   throws ServletException, IOException {
-     // Get form parameters
+      throws ServletException, IOException {
+    // Get form parameters
     String username = request.getParameter("username");
     String password = request.getParameter("password");
     String surname = request.getParameter("surname");
@@ -92,29 +116,30 @@ public class AppServlet extends HttpServlet {
         model.put("records", searchResults(surname));
         Template template = fm.getTemplate("details.html");
         template.process(model, response.getWriter());
-      }
-      else {
+      } else {
         Template template = fm.getTemplate("invalid.html");
         template.process(null, response.getWriter());
       }
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
-    }
-    catch (Exception error) {
+    } catch (Exception error) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 
   private boolean authenticated(String username, String password) throws SQLException {
 
-    // Use PreparedStatement to precompile the auth SQL query and prevent SQL injection attacks
+    // Use PreparedStatement to precompile the auth SQL query and prevent SQL
+    // injection attacks
     try (PreparedStatement stmt = database.prepareStatement(AUTH_QUERY)) {
 
-      // Set the parameters of the precompiled auth SQL query using the index and the user input
+      // Set the parameters of the precompiled auth SQL query using the index and the
+      // user input
       // index = 1 -> username in AUTH_QUERY
       // index = 2 -> password in AUTH_QUERY
       stmt.setString(1, username);
-      stmt.setString(2, password);
+      // Compares password received in form with it's hashed + salted equivalent
+      stmt.setString(2, getHash(password));
 
       // Execute the prepared & formatted statement & get result set
       ResultSet results = stmt.executeQuery();
@@ -127,10 +152,12 @@ public class AppServlet extends HttpServlet {
 
     List<Record> records = new ArrayList<>();
 
-    // Use PreparedStatement to precompile the auth SQL query and prevent SQL injection attacks
+    // Use PreparedStatement to precompile the auth SQL query and prevent SQL
+    // injection attacks
     try (PreparedStatement stmt = database.prepareStatement(SEARCH_QUERY)) {
 
-      // Set the parameters of the precompiled auth SQL query using the index and the user input
+      // Set the parameters of the precompiled auth SQL query using the index and the
+      // user input
       // index = 1 -> surname in SEARCH_QUERY
       stmt.setString(1, surname);
 
