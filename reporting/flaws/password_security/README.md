@@ -30,8 +30,19 @@ SHA-256 hashed passwords with salt. Our salt is a statically declared Salt attri
 that already existed in the database. A fully secure implementation would require a randomly generated password salt and
 an empty database, which would salt passwords at the registration process. 
 
+# Code Analysis
+Implemented a function `getHashed` that takes a plain string password, hashes it using our salt and returns it as a string. 
+This is done using a `MessageDigest` object: `MessageDigest md = MessageDigest.getInstance("SHA-256")`
+And is updated using salt: `md.update(salt)`. As the md digest object is in bytes format, it is converted back 
+to a string before being returned. 
+
+The application uses the function to compare the text received as password in the login form.
+`stmt.setString(2, getHash(password))`
+The same fucntion could be used in a registration process, hashing the new password before storing.
+
 # Evidence
 ### Screenshot of final database data and schema that shows the passwords stored in hashed text.
 Final Database structure
 ![Final Db](./final_db.png)
+Final Schema structure
 ![Final Schema](./final_schema.png)
