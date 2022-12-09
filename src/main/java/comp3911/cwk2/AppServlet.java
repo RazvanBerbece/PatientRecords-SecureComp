@@ -24,7 +24,6 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 @SuppressWarnings("serial")
 public class AppServlet extends HttpServlet {
