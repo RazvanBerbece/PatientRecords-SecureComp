@@ -38,6 +38,7 @@ public class AppServlet extends HttpServlet {
   private static final String ATTEMPT_QUERY = "select * from user where username=?";
   // Query used to increment user login attempts
   private static final String INCREMENT_QUERY = "UPDATE user SET attempts = attempts + 1 WHERE username = ?";
+  private static final String RESET_QUERY = "UPDATE user SET attempts = 0 WHERE username = ?";
 
   
 
@@ -117,6 +118,7 @@ public class AppServlet extends HttpServlet {
     try {
       if (authenticated(username, password) && attempts(username)) {
         // Get search results and merge with template
+        resetAttempts(username);
         Map<String, Object> model = new HashMap<>();
         model.put("records", searchResults(surname));
         Template template = fm.getTemplate("details.html");
@@ -181,6 +183,15 @@ public class AppServlet extends HttpServlet {
   private void incrementAttempts (String username) throws SQLException {
 
     try (PreparedStatement stmt = database.prepareStatement(INCREMENT_QUERY)) {
+      stmt.setString(1, username);
+      stmt.execute();
+    }
+  }
+
+  // Resets attempts to 0 after successful login
+  private void resetAttempts (String username) throws SQLException {
+
+    try (PreparedStatement stmt = database.prepareStatement(RESET_QUERY)) {
       stmt.setString(1, username);
       stmt.execute();
     }
