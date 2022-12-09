@@ -23,12 +23,13 @@ These issues consist of a few different threat types:
 3. Information Disclosure (attacker gaining access to data they are not supposed to)
 4. Elevation of Privilege (anonymous user elevating to registered user)
 
-In order to secure the application we went ahead and applied 2 different measures. First, we implemented a requirement of a unique
+In order to secure the application we went ahead and applied 3 different measures. First, we implemented a requirement of a unique
 usernames in the database, however a fully robust implementation using more secure passwords would require a registration page, 
 which is outside the scope of this assignment. Secondly, to improve password security we added the use of
 SHA-256 hashed passwords with salt. Our salt is a statically declared Salt attributein ord er to first convert passwords 
 that already existed in the database. A fully secure implementation would require a randomly generated password salt and
-an empty database, which would salt passwords at the registration process. 
+an empty database, which would salt passwords at the registration process. Lastly, we implemented account lockout so if a 
+user fails to login 3 times, they will not be able to login and a message is shown to inform them.
 
 # Code Analysis
 Implemented a function `getHashed` that takes a plain string password, hashes it using our salt and returns it as a string. 
