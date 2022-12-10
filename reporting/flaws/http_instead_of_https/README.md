@@ -16,6 +16,7 @@ Note that the POST form data sent (username, password, surname) is visible and n
 
 # Evidence
 **Prior to implementing HTTPS**
+Note: Command ran on macOS (UNIX pretty much) for this result: `sudo tcpdump -i lo0 -vvvSA dst port 8080`
 ![Eavesdropped POSTed data payload (in terminal window, note that it is NOT encrypted and readable)](./ss1.png)
 **Post implementing HTTPS**
 ![Eavesdropped POSTed data payload (in terminal window, note that it is encrypted)](./ss2.png)
