@@ -8,7 +8,7 @@ One of the identified vulnerabilities of the service is that password are genera
 These issues mean that a user profile could easily be compromised. Either by an attacker gaining access to the database in
 some way and usign the plain text stored passwords or a brute force attack using common sequences and combinations of 
 characters and numbers. Lastly, in this implementation, users are allowed to enter weak credentials, a username which
-is non-unique and a password that has no requirement of using a certaing combination of numbers, uppercase and 
+is non-unique and a password that has no requirement of using a certain combination of numbers, uppercase and 
 lowercase letters or special characters. These flaws were discovered by inspecting the SQL Database using a 
 GUI tool, SQLiteStudio, and inspecting the database schema and data stored.
 
@@ -23,12 +23,13 @@ These issues consist of a few different threat types:
 3. Information Disclosure (attacker gaining access to data they are not supposed to)
 4. Elevation of Privilege (anonymous user elevating to registered user)
 
-In order to secure the application we went ahead and applied 2 different measures. First, we implemented a requirement of a unique
+In order to secure the application we went ahead and applied 3 different measures. First, we implemented a requirement of a unique
 usernames in the database, however a fully robust implementation using more secure passwords would require a registration page, 
 which is outside the scope of this assignment. Secondly, to improve password security we added the use of
 SHA-256 hashed passwords with salt. Our salt is a statically declared Salt attributein ord er to first convert passwords 
 that already existed in the database. A fully secure implementation would require a randomly generated password salt and
-an empty database, which would salt passwords at the registration process. 
+an empty database, which would salt passwords at the registration process. Lastly, we implemented account lockout so if a 
+user fails to login 3 times, they will not be able to login and a message is shown to inform them.
 
 # Code Analysis
 Implemented a function `getHashed` that takes a plain string password, hashes it using our salt and returns it as a string. 
@@ -38,7 +39,7 @@ to a string before being returned.
 
 The application uses the function to compare the text received as password in the login form.
 `stmt.setString(2, getHash(password))`
-The same fucntion could be used in a registration process, hashing the new password before storing.
+The same function could be used in a registration process, hashing the new password before storing.
 
 # Evidence
 ### Screenshot of final database data and schema that shows the passwords stored in hashed text.
